@@ -58,14 +58,21 @@ class OpenAIGenerator(BaseGenerator):
             "You are a persona generator. Create a realistic persona based on "
             "the provided schema. The persona should be consistent and "
             "believable, with all characteristics working together to form a "
-            "cohesive personality. Return the response as a valid JSON object."
+            "cohesive personality. Return the response as a valid JSON object. "
+            "For any field whose type is 'string', output a plain string, "
+            "even if characteristics are listed. Do not output nested objects "
+            "for string fields."
         )
 
         # Create the user message with schema and prompt
         user_message = f"Schema:\n{self.schema}\n"
         if prompt:
             user_message += f"\nAdditional context: {prompt}\n"
-        user_message += "\nGenerate a persona that matches this schema."
+        user_message += (
+            "\nGenerate a persona that matches this schema. "
+            "Remember: for fields of type 'string', output a plain string, "
+            "not an object."
+        )
 
         try:
             # Call the OpenAI API
@@ -106,28 +113,86 @@ class OpenAIGenerator(BaseGenerator):
         Returns:
             bool: True if the persona is valid, False otherwise
         """
+        print("Validating persona:", persona)
+        print("Schema fields:", list(self.schema["fields"].keys()))
         if not self.schema:
             return False
 
-        # Check that all required fields from schema are present
-        for field, field_schema in self.schema.items():
-            # Default to required if not specified
+        def validate_field(
+            field_name: str, field_schema: Dict[str, Any], data: Any
+        ) -> bool:
+            """Helper function to validate a field and its nested fields."""
+            # Check if field is required
             if field_schema.get("required", True):
-                if field not in persona:
-                    print(f"Missing required field: {field}")
+                if field_name not in data:
+                    print(f"Missing required field: {field_name}")
                     return False
 
-                # Check field type if specified
+                value = data[field_name]
                 expected_type = field_schema.get("type")
+
+                # Type validation
                 if expected_type:
-                    value = persona[field]
                     if expected_type == "string" and not isinstance(value, str):
-                        print(f"Field {field} should be a string, got {type(value)}")
+                        print(
+                            f"Field {field_name} should be a string, "
+                            f"got {type(value)}"
+                        )
                         return False
                     elif expected_type == "number" and not isinstance(
                         value, (int, float)
                     ):
-                        print(f"Field {field} should be a number, got {type(value)}")
+                        print(
+                            f"Field {field_name} should be a number, "
+                            f"got {type(value)}"
+                        )
                         return False
+                    elif expected_type == "object":
+                        if not isinstance(value, dict):
+                            print(
+                                f"Field {field_name} should be an object, "
+                                f"got {type(value)}"
+                            )
+                            return False
+                        # Validate nested fields
+                        if "fields" in field_schema:
+                            for subfield, subfield_schema in field_schema[
+                                "fields"
+                            ].items():
+                                if not validate_field(subfield, subfield_schema, value):
+                                    return False
+                    elif expected_type == "array":
+                        if not isinstance(value, list):
+                            print(
+                                f"Field {field_name} should be an array, "
+                                f"got {type(value)}"
+                            )
+                            return False
+                        # Validate array items if they are objects
+                        if (
+                            "items" in field_schema
+                            and field_schema["items"].get("type") == "object"
+                        ):
+                            for item in value:
+                                if not isinstance(item, dict):
+                                    print(
+                                        f"Item in {field_name} should be an object, "
+                                        f"got {type(item)}"
+                                    )
+                                    return False
+                                if "fields" in field_schema["items"]:
+                                    for subfield, subfield_schema in field_schema[
+                                        "items"
+                                    ]["fields"].items():
+                                        if not validate_field(
+                                            subfield, subfield_schema, item
+                                        ):
+                                            return False
+            return True
+
+        # Validate all fields in the schema
+        for field, field_schema in self.schema["fields"].items():
+            if not validate_field(field, field_schema, persona):
+                return False
 
         return True

@@ -1,78 +1,81 @@
 # Test schema following the same pattern as default and example schemas
 # Fields can be direct or organized in sections, and use characteristics to define their content
 
-# Direct fields
-id:
-  type: string
-  required: true
-  description: Unique identifier for the persona
+name: "Test Persona Schema"
+description: "A test schema for validating persona generation and validation logic."
+version: "1.0.0"
+fields:
+  id:
+    type: string
+    required: true
+    description: "Unique identifier for the persona"
 
-name:
-  type: string
-  required: true
-  description: Full name of the person
+  name:
+    type: string
+    required: true
+    description: "Full name of the person"
 
-age:
-  type: number
-  required: true
-  description: Age in years
+  age:
+    type: number
+    required: true
+    description: "Age in years"
 
-# Fields with characteristics
-background:
-  type: string
-  required: true
-  description: Personal background and history
-  characteristics:
-    - personal.cultural_background
-    - personal.family_situation
-    - personal.religion
+  # Fields with characteristics
+  background:
+    type: string
+    required: true
+    description: "Personal background and history"
+    characteristics:
+      - personal.cultural_background
+      - personal.family_situation
+      - personal.religion
 
-professional:
-  type: object
-  required: true
-  description: Professional information section
-  fields:
-    role:
-      type: string
-      required: true
-      description: Current job position
-      characteristics:
-        - professional.career_path
-        - professional.industry
-    
-    education:
-      type: string
-      required: true
-      description: Educational background
-      characteristics:
-        - professional.education_level
-        - professional.career_path
+  professional:
+    type: object
+    required: true
+    description: "Professional information section"
+    fields:
+      role:
+        type: string
+        required: true
+        description: "Current job position"
+        characteristics:
+          - professional.career_path
+          - professional.industry
+      
+      education:
+        type: string
+        required: true
+        description: "Educational background"
+        characteristics:
+          - professional.education_level
+          - professional.career_path
 
-    skills:
-      type: array
-      required: true
-      description: Professional skills
-      characteristics:
-        - professional.technical_skills
-        - professional.soft_skills
+      skills:
+        type: array
+        required: true
+        description: "Professional skills"
+        characteristics:
+          - professional.technical_skills
+          - professional.soft_skills
 
-appearance:
-  type: object
-  required: true
-  description: Physical appearance section
-  fields:
-    description:
-      type: string
-      required: true
-      description: Physical appearance description
-      characteristics:
-        - physical.height
-        - physical.body_type
-    
-    style:
-      type: string
-      required: true
-      description: Fashion and style preferences
-      characteristics:
-        - physical.fashion_style
-        - personality.aesthetic_preferences 
+  appearance:
+    type: object
+    required: true
+    description: "Physical appearance section"
+    fields:
+      description:
+        type: string
+        required: true
+        description: "Physical appearance description"
+        characteristics:
+          - physical.height
+          - physical.body_type
+      
+      style:
+        type: string
+        required: true
+        description: "Fashion and style preferences"
+        characteristics:
+          - physical.fashion_style
+          - personality.aesthetic_preferences 

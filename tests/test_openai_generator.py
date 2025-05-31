@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 import yaml
 
@@ -13,7 +15,8 @@ def default_generator():
 @pytest.fixture
 def test_generator():
     """Create a generator instance with test schema for testing."""
-    return OpenAIGenerator(schema_path="tests/schemas/test_schema.yaml")
+    schema_path = Path("tests/schemas/test_schema.yaml")
+    return OpenAIGenerator(schema_path=schema_path)
 
 
 def test_openai_connection(default_generator):
@@ -35,7 +38,7 @@ def test_generate_persona_with_default_schema(default_generator):
     assert isinstance(persona, dict), "Generated persona should be a dict"
 
     # Check required fields
-    for field, field_spec in schema.items():
+    for field, field_spec in schema["fields"].items():
         if field_spec.get("required", False):
             assert field in persona, f"Persona should have {field}"
 
@@ -54,24 +57,22 @@ def test_generate_persona_with_test_schema(test_generator):
     assert isinstance(persona, dict), "Generated persona should be a dict"
 
     # Check direct fields
-    for field, field_spec in schema.items():
+    for field, field_spec in schema["fields"].items():
         is_required = field_spec.get("required", False)
         is_not_object = field_spec.get("type") != "object"
         if is_required and is_not_object:
             assert field in persona, f"Persona should have {field}"
 
-    # Check section fields
-    for section, section_spec in schema.items():
-        if section_spec.get("type") == "object" and section_spec.get("required", False):
-            assert section in persona, f"Persona should have {section} section"
-
-            # Check fields within section
-            if "fields" in section_spec:
-                for field_name, field_spec in section_spec["fields"].items():
-                    if field_spec.get("required", False):
+    # Check section fields (if any fields are objects with subfields)
+    for field, field_spec in schema["fields"].items():
+        if field_spec.get("type") == "object" and field_spec.get("required", False):
+            assert field in persona, f"Persona should have {field} section"
+            if "fields" in field_spec:
+                for subfield, subfield_spec in field_spec["fields"].items():
+                    if subfield_spec.get("required", False):
                         assert (
-                            field_name in persona[section]
-                        ), f"Section {section} should have {field_name}"
+                            subfield in persona[field]
+                        ), f"Section {field} should have {subfield}"
 
 
 def test_generate_without_schema():
@@ -90,7 +91,7 @@ def test_validate_persona_with_default_schema(default_generator):
     # Create valid persona based on schema
     valid_persona = {
         field: "test_value"
-        for field, field_spec in schema.items()
+        for field, field_spec in schema["fields"].items()
         if field_spec.get("required", False)
     }
     valid_persona["id"] = "test-123"  # Add ID if required

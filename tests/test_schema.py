@@ -36,18 +36,29 @@ class TestSchemaValidation:
             "visual_description",
         ]
 
+        # Check top-level structure
+        assert "name" in schema, "Schema name missing"
+        assert "description" in schema, "Schema description missing"
+        assert "version" in schema, "Schema version missing"
+        assert "fields" in schema, "Fields dictionary missing"
+
+        # Check required fields
         for field in required_fields:
-            assert field in schema, f"Required field {field} missing"
-            assert "type" in schema[field], f"Type missing for {field}"
-            assert "required" in schema[field], f"Required flag missing for {field}"
-            assert "description" in schema[field], f"Description missing for {field}"
+            assert field in schema["fields"], f"Required field {field} missing"
+            assert "type" in schema["fields"][field], f"Type missing for {field}"
+            assert (
+                "required" in schema["fields"][field]
+            ), f"Required flag missing for {field}"
+            assert (
+                "description" in schema["fields"][field]
+            ), f"Description missing for {field}"
 
     def test_characteristics_mapping(self):
         """Test that all characteristics referenced in schema exist."""
         schema = load_default_schema()
         characteristics = load_characteristics()
 
-        for field, field_data in schema.items():
+        for field, field_data in schema["fields"].items():
             if "characteristics" in field_data:
                 for char_path in field_data["characteristics"]:
                     category, char = char_path.split(".")
@@ -72,7 +83,7 @@ class TestSchemaValidation:
 
         for field in required_fields:
             assert (
-                schema[field]["required"] is True
+                schema["fields"][field]["required"] is True
             ), f"Field {field} should be required"
 
     def test_data_types(self):
@@ -80,7 +91,7 @@ class TestSchemaValidation:
         schema = load_default_schema()
         valid_types = ["string", "number", "boolean", "array", "object"]
 
-        for field, field_data in schema.items():
+        for field, field_data in schema["fields"].items():
             msg = f"Invalid type {field_data['type']} for field {field}"
             assert field_data["type"] in valid_types, msg
 
@@ -111,15 +122,15 @@ class TestSchemaValidation:
         schema = load_default_schema()
 
         # Test job_title characteristics
-        assert "characteristics" in schema["job_title"]
-        job_chars = schema["job_title"]["characteristics"]
+        assert "characteristics" in schema["fields"]["job_title"]
+        job_chars = schema["fields"]["job_title"]["characteristics"]
         assert "professional.career_path" in job_chars
         assert "professional.education_level" in job_chars
         assert "professional.industry" in job_chars
 
         # Test bio characteristics
-        assert "characteristics" in schema["bio"]
-        bio_chars = schema["bio"]["characteristics"]
+        assert "characteristics" in schema["fields"]["bio"]
+        bio_chars = schema["fields"]["bio"]["characteristics"]
         assert "personal.religion" in bio_chars
         assert "personal.cultural_background" in bio_chars
         assert "personal.family_situation" in bio_chars
@@ -128,8 +139,8 @@ class TestSchemaValidation:
         assert "personality.hobbies" in bio_chars
 
         # Test visual_description characteristics
-        assert "characteristics" in schema["visual_description"]
-        visual_chars = schema["visual_description"]["characteristics"]
+        assert "characteristics" in schema["fields"]["visual_description"]
+        visual_chars = schema["fields"]["visual_description"]["characteristics"]
         assert "physical.height" in visual_chars
         assert "physical.body_type" in visual_chars
         assert "physical.fashion_style" in visual_chars

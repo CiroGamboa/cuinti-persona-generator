@@ -3,6 +3,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from src.generators.openai import OpenAIGenerator
+from src.schema_loader import SchemaLoader
 
 
 def load_environment():
@@ -26,6 +27,73 @@ def test_openai_connection() -> bool:
         return False
 
 
+def load_and_validate_schema(schema_name: str) -> dict:
+    """Load and validate a schema.
+
+    Args:
+        schema_name: Name of the schema to load
+
+    Returns:
+        Validated schema data
+    """
+    print(f"Loading schema: {schema_name}...")
+    schema_loader = SchemaLoader()
+    try:
+        schema = schema_loader.load_schema(schema_name)
+        print("✅ Schema loaded and validated successfully!")
+        return schema.dict()
+    except Exception as e:
+        print(f"❌ Failed to load schema: {str(e)}")
+        raise
+
+
+def generate_persona(schema: dict) -> dict:
+    """Generate a persona using the provided schema.
+
+    Args:
+        schema: Validated schema data
+
+    Returns:
+        Generated persona data
+    """
+    print("Generating persona...")
+    generator = OpenAIGenerator()
+    try:
+        persona = generator.generate_persona(schema)
+        print("✅ Persona generated successfully!")
+        return persona
+    except Exception as e:
+        print(f"❌ Failed to generate persona: {str(e)}")
+        raise
+
+
+def export_persona(persona: dict, output_format: str = "json") -> None:
+    """Export the generated persona to a file.
+
+    Args:
+        persona: Generated persona data
+        output_format: Output format (json or yaml)
+    """
+    output_path = Path("persona.json" if output_format == "json" else "persona.yaml")
+    print(f"Exporting persona to {output_path}...")
+
+    try:
+        if output_format == "json":
+            import json
+
+            with open(output_path, "w") as f:
+                json.dump(persona, f, indent=2)
+        else:
+            import yaml
+
+            with open(output_path, "w") as f:
+                yaml.safe_dump(persona, f, default_flow_style=False)
+        print(f"✅ Persona exported successfully to {output_path}!")
+    except Exception as e:
+        print(f"❌ Failed to export persona: {str(e)}")
+        raise
+
+
 def main():
     """Main application workflow."""
     try:
@@ -38,11 +106,14 @@ def main():
             print("Exiting due to connection failure...")
             return
 
-        # TODO: Future workflow steps
         # Step 3: Load schema
+        schema = load_and_validate_schema("default_schema")
+
         # Step 4: Generate persona
-        # Step 5: Validate persona
-        # Step 6: Export persona
+        persona = generate_persona(schema)
+
+        # Step 5: Export persona
+        export_persona(persona)
 
         print("\nApplication workflow completed successfully!")
 
