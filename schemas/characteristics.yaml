@@ -1,0 +1,86 @@
+# Master list of all possible characteristics
+# Each characteristic can have:
+# - description: what this characteristic represents
+# - category: grouping of similar characteristics
+# - examples: sample values or expressions
+
+personal:
+  religion:
+    description: Religious beliefs and practices
+    examples:
+      - "practices Buddhism"
+      - "devout Catholic"
+      - "spiritual but not religious"
+  
+  cultural_background:
+    description: Cultural heritage and traditions
+    examples:
+      - "third-generation Italian-American"
+      - "grew up in a multicultural household"
+  
+  family_situation:
+    description: Family structure and relationships
+    examples:
+      - "single parent"
+      - "close-knit extended family"
+      - "only child"
+
+professional:
+  career_path:
+    description: Career progression and goals
+    examples:
+      - "career changer"
+      - "fast-track executive"
+  
+  education_level:
+    description: Academic background
+    examples:
+      - "self-taught programmer"
+      - "PhD in Physics"
+  
+  industry:
+    description: Field of work
+    examples:
+      - "tech startup"
+      - "healthcare"
+      - "education"
+
+physical:
+  height:
+    description: Physical height
+    examples:
+      - "tall"
+      - "average height"
+  
+  body_type:
+    description: Physical build
+    examples:
+      - "athletic"
+      - "slim"
+  
+  fashion_style:
+    description: Clothing preferences
+    examples:
+      - "business casual"
+      - "bohemian"
+      - "minimalist"
+
+personality:
+  life_goals:
+    description: Personal aspirations
+    examples:
+      - "seeking work-life balance"
+      - "focused on career growth"
+  
+  personal_values:
+    description: Core beliefs and principles
+    examples:
+      - "environmental consciousness"
+      - "community service"
+  
+  hobbies:
+    description: Leisure activities
+    examples:
+      - "amateur photography"
+      - "rock climbing"
+      - "cooking" 

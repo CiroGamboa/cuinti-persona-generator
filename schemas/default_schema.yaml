@@ -1,0 +1,61 @@
+# Default persona schema
+# Each field can have the following properties:
+# - type: data type (string, number, etc.)
+# - required: whether the field is mandatory
+# - description: human-readable description of the field
+# - characteristics: list of characteristics that should be incorporated into this field
+
+id:
+  type: string
+  required: true
+  description: Unique identifier for the persona
+
+first_name:
+  type: string
+  required: true
+  description: Person's first name
+
+last_name:
+  type: string
+  required: true
+  description: Person's last name
+
+age:
+  type: string
+  required: true
+  description: Person's age
+
+gender:
+  type: string
+  required: true
+  description: Person's gender
+
+job_title:
+  type: string
+  required: true
+  description: Person's current job title
+  characteristics:
+    - professional.career_path
+    - professional.education_level
+    - professional.industry
+
+bio:
+  type: string
+  required: true
+  description: Brief biography or background story
+  characteristics:
+    - personal.religion
+    - personal.cultural_background
+    - personal.family_situation
+    - personality.life_goals
+    - personality.personal_values
+    - personality.hobbies
+
+visual_description:
+  type: string
+  required: true
+  description: Physical appearance and visual characteristics
+  characteristics:
+    - physical.height
+    - physical.body_type
+    - physical.fashion_style 
