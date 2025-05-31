@@ -1,0 +1,94 @@
+# Example persona schema with a different structure
+# This schema demonstrates an alternative way to define a persona
+# with different fields and characteristics
+
+basic_info:
+  type: object
+  required: true
+  description: Basic personal information
+  fields:
+    name:
+      type: string
+      required: true
+      description: Full name of the person
+    birth_date:
+      type: string
+      required: true
+      description: Date of birth
+    nationality:
+      type: string
+      required: true
+      description: Country of origin
+      characteristics:
+        - personal.cultural_background
+        - personal.language_skills
+
+professional:
+  type: object
+  required: true
+  description: Professional background and skills
+  fields:
+    current_role:
+      type: string
+      required: true
+      description: Current job position
+      characteristics:
+        - professional.career_path
+        - professional.industry
+    skills:
+      type: array
+      required: true
+      description: List of professional skills
+      characteristics:
+        - professional.technical_skills
+        - professional.soft_skills
+    experience_years:
+      type: number
+      required: true
+      description: Years of professional experience
+
+lifestyle:
+  type: object
+  required: true
+  description: Personal lifestyle and preferences
+  fields:
+    daily_routine:
+      type: string
+      required: true
+      description: Typical daily schedule
+      characteristics:
+        - personality.work_life_balance
+        - personality.energy_level
+    interests:
+      type: array
+      required: true
+      description: Personal interests and hobbies
+      characteristics:
+        - personality.hobbies
+        - personality.personal_values
+    living_situation:
+      type: string
+      required: true
+      description: Current living arrangement
+      characteristics:
+        - personal.family_situation
+        - personal.lifestyle_preferences
+
+appearance:
+  type: object
+  required: true
+  description: Physical appearance and style
+  fields:
+    height:
+      type: string
+      required: true
+      description: Height measurement
+      characteristics:
+        - physical.height
+    style:
+      type: string
+      required: true
+      description: Fashion and style preferences
+      characteristics:
+        - physical.fashion_style
+        - personality.aesthetic_preferences 
