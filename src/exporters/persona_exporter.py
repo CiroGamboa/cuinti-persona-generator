@@ -17,13 +17,16 @@ class PersonaExporter:
         """
         self.output_dir = Path(output_dir)
 
-    def export(self, persona: Dict[str, Any], output_format: str = "json") -> Path:
+    def export(
+        self, persona: Dict[str, Any], output_format: str = "json", filename: str = None
+    ) -> Path:
         """
         Export the persona to a file.
 
         Args:
             persona: Generated persona data
             output_format: Output format (json or yaml)
+            filename: Custom filename for the output file (optional)
 
         Returns:
             Path: Path to the exported file
@@ -34,7 +37,12 @@ class PersonaExporter:
         if output_format not in ["json", "yaml"]:
             raise ValueError("Output format must be either 'json' or 'yaml'")
 
-        output_path = self.output_dir / f"persona.{output_format}"
+        if filename is None:
+            filename = f"persona.{output_format}"
+        elif not filename.endswith(f".{output_format}"):
+            filename = f"{filename}.{output_format}"
+
+        output_path = self.output_dir / filename
         print(f"Exporting persona to {output_path}...")
 
         try:
