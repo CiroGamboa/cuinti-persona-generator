@@ -1,0 +1,10 @@
+age: 30
+interests:
+  - coding
+  - reading
+  - hiking
+location:
+  city: San Francisco
+  country: USA
+name: John Doe
+occupation: Software Engineer 
