@@ -1,8 +1,6 @@
-import os
 from pathlib import Path
 
 import pytest
-import yaml
 
 from src.generators.openai import OpenAIGenerator
 
@@ -17,7 +15,7 @@ def default_generator():
 def test_generator():
     """Create a generator instance with test schema for testing."""
     schema_path = Path("tests/fixtures/schemas/test_schema.yaml")
-    return OpenAIGenerator(schema_path=schema_path)
+    return OpenAIGenerator(schema_path=str(schema_path))
 
 
 def test_openai_connection():
@@ -69,7 +67,8 @@ def test_schema_loading():
     assert default_gen.schema is not None, "Should load default schema"
 
     # Test loading test schema
-    test_gen = OpenAIGenerator(schema_path="tests/fixtures/schemas/test_schema.yaml")
+    test_path = "tests/fixtures/schemas/test_schema.yaml"
+    test_gen = OpenAIGenerator(schema_path=test_path)
     assert test_gen.schema is not None, "Should load test schema"
 
     # Test loading non-existent schema

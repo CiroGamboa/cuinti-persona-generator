@@ -4,6 +4,8 @@ from typing import Any, Dict, Optional
 
 import yaml
 
+from src.schemas.loader import SchemaLoader
+
 
 class BaseGenerator(ABC):
     """
@@ -12,12 +14,12 @@ class BaseGenerator(ABC):
     generate.
     """
 
-    def __init__(self, schema_path: Optional[Path] = None):
+    def __init__(self, schema_path: Optional[str] = None):
         """
         Initialize the generator with a schema path.
 
         Args:
-            schema_path (Optional[Path]): Path to the schema file that
+            schema_path (Optional[str]): Path to the schema file that
                 defines the persona structure
         """
         self.schema_path = schema_path
@@ -32,13 +34,15 @@ class BaseGenerator(ABC):
 
         Raises:
             FileNotFoundError: If the schema file doesn't exist
-            yaml.YAMLError: If the schema file is not valid YAML
+            ValueError: If schema validation fails
         """
         if not self.schema_path:
             raise ValueError("Schema path not provided")
 
-        with open(self.schema_path, "r") as f:
-            return yaml.safe_load(f)
+        schema_dir = str(Path(self.schema_path).parent)
+        schema_name = Path(self.schema_path).stem
+        loader = SchemaLoader(schema_dir=schema_dir)
+        return loader.load_schema(schema_name)
 
     @abstractmethod
     def generate(self, prompt: Optional[str] = None) -> Dict[str, Any]:
