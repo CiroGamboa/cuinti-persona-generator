@@ -1,10 +1,10 @@
 {
-    "id": "persona_123",
-    "first_name": "Evelyn",
-    "last_name": "Bennett",
-    "age": "37",
-    "gender": "Female",
+    "id": "123456789",
+    "first_name": "John",
+    "last_name": "Doe",
+    "age": "35",
+    "gender": "Male",
     "job_title": "Software Engineer",
-    "bio": "Evelyn, a devout Christian, was born and raised in a diverse community in San Francisco. She's a single mother of two, fiercely independent and driven by her goal of creating innovative solutions in her job as a software engineer. In her free time, she enjoys reading and coding, living by the values of continuous learning and compassion. Her cultural background and family situation have shaped her to be resilient and empathetic.",
-    "visual_description": "Evelyn is a tall and athletic woman with a comfortable, casual fashion style. She usually dresses in jeans and t-shirts, and wears glasses."
+    "bio": "John Doe was born and raised in Texas and comes from a family of engineers. He is a Christian and enjoys spending time with his wife and two children. John is known for his dedication to his work and is highly respected in the tech industry. In his free time, he enjoys playing guitar and coding for fun. His life goal is to create a platform that can help automate mundane tasks for people with disabilities.",
+    "visual_description": "John is a tall individual, standing at 6 feet 2 inches. He has a lean body type, with brown hair and blue eyes. He generally dresses in casual attire, often seen wearing jeans and a t-shirt."
 }

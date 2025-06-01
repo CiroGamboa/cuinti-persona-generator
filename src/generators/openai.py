@@ -12,15 +12,26 @@ class OpenAIGenerator(BaseGenerator):
     Uses GPT models to generate realistic personas based on schemas.
     """
 
-    def __init__(self, schema_path: Optional[str] = None):
+    def __init__(
+        self,
+        schema_path: Optional[str] = None,
+        config_path: Optional[str] = None,
+        model: str = "gpt-4",
+        temperature: float = 0.7,
+    ):
         """
         Initialize the OpenAI generator.
 
         Args:
             schema_path (Optional[str]): Path to the schema file
+            config_path (Optional[str]): Path to the generator config file
+            model (str): The OpenAI model to use
+            temperature (float): Sampling temperature (0.0 to 1.0)
         """
-        super().__init__(schema_path)
+        super().__init__(schema_path, config_path)
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        self.model = model
+        self.temperature = temperature
 
     def verify_access(self) -> bool:
         """
@@ -53,38 +64,24 @@ class OpenAIGenerator(BaseGenerator):
         if not self.schema:
             raise ValueError("Schema not loaded. Please provide a schema path.")
 
-        # Create the system message that explains the task
-        system_message = (
-            "You are a persona generator. Create a realistic persona based on "
-            "the provided schema. The persona should be consistent and "
-            "believable, with all characteristics working together to form a "
-            "cohesive personality. Return the response as a valid JSON object. "
-            "For any field whose type is 'string', output a plain string, "
-            "even if characteristics are listed. Do not output nested objects "
-            "for string fields. "
-            "IMPORTANT: The 'bio' field must not exceed 500 characters."
-        )
-
-        # Create the user message with schema and prompt
-        user_message = f"Schema:\n{self.schema.model_dump_json()}\n"
-        if prompt:
-            user_message += f"\nAdditional context: {prompt}\n"
-        user_message += (
-            "\nGenerate a persona that matches this schema. "
-            "Remember: for fields of type 'string', output a plain string, "
-            "not an object. "
-            "IMPORTANT: The 'bio' field must not exceed 500 characters."
-        )
+        if not self.config:
+            raise ValueError("Configuration not loaded")
 
         try:
             # Call the OpenAI API
             response = self.client.chat.completions.create(
-                model="gpt-4",  # Using GPT-4 for better quality
+                model=self.model,
                 messages=[
-                    {"role": "system", "content": system_message},
-                    {"role": "user", "content": user_message},
+                    {
+                        "role": "system",
+                        "content": self._get_system_prompt(),
+                    },
+                    {
+                        "role": "user",
+                        "content": self._get_user_prompt(prompt),
+                    },
                 ],
-                temperature=0.7,  # Add some randomness
+                temperature=self.temperature,
             )
 
             # Parse the response

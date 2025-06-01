@@ -8,14 +8,18 @@ from src.generators.openai import OpenAIGenerator
 @pytest.fixture
 def default_generator():
     """Create a generator instance with default schema for testing."""
-    return OpenAIGenerator(schema_path="schemas/default_schema.yaml")
+    config_path = Path("tests/fixtures/config/test_generator_config.yaml")
+    return OpenAIGenerator(
+        schema_path="schemas/default_schema.yaml", config_path=str(config_path)
+    )
 
 
 @pytest.fixture
 def test_generator():
     """Create a generator instance with test schema for testing."""
     schema_path = Path("tests/fixtures/schemas/test_schema.yaml")
-    return OpenAIGenerator(schema_path=str(schema_path))
+    config_path = Path("tests/fixtures/config/test_generator_config.yaml")
+    return OpenAIGenerator(schema_path=str(schema_path), config_path=str(config_path))
 
 
 def test_openai_connection():
@@ -24,12 +28,11 @@ def test_openai_connection():
     assert generator.verify_access()
 
 
-def test_generate_persona_with_default_schema():
+def test_generate_persona_with_default_schema(default_generator):
     """Test generating a persona with the default schema."""
-    generator = OpenAIGenerator(schema_path="schemas/default_schema.yaml")
-    persona = generator.generate()
+    persona = default_generator.generate()
     assert persona is not None
-    assert generator.validate(persona)
+    assert default_generator.validate(persona)
 
 
 def test_generate_persona_with_test_schema(test_generator):
@@ -46,11 +49,10 @@ def test_generate_without_schema():
         generator.generate()
 
 
-def test_validate_persona_with_default_schema():
+def test_validate_persona_with_default_schema(default_generator):
     """Test validating a persona against the default schema."""
-    generator = OpenAIGenerator(schema_path="schemas/default_schema.yaml")
-    persona = generator.generate()
-    assert generator.validate(persona)
+    persona = default_generator.generate()
+    assert default_generator.validate(persona)
 
 
 def test_validate_persona_with_test_schema(test_generator):
@@ -61,16 +63,20 @@ def test_validate_persona_with_test_schema(test_generator):
 
 def test_schema_loading():
     """Test that generator can load different schema files."""
+    config_path = Path("tests/fixtures/config/test_generator_config.yaml")
+
     # Test loading default schema
     schema_path = "schemas/default_schema.yaml"
-    default_gen = OpenAIGenerator(schema_path=schema_path)
+    default_gen = OpenAIGenerator(schema_path=schema_path, config_path=str(config_path))
     assert default_gen.schema is not None, "Should load default schema"
 
     # Test loading test schema
     test_path = "tests/fixtures/schemas/test_schema.yaml"
-    test_gen = OpenAIGenerator(schema_path=test_path)
+    test_gen = OpenAIGenerator(schema_path=test_path, config_path=str(config_path))
     assert test_gen.schema is not None, "Should load test schema"
 
     # Test loading non-existent schema
     with pytest.raises(FileNotFoundError):
-        OpenAIGenerator(schema_path="non_existent_schema.yaml")
+        OpenAIGenerator(
+            schema_path="non_existent_schema.yaml", config_path=str(config_path)
+        )

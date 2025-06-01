@@ -32,6 +32,16 @@ def parse_arguments():
         help=("Path to schema file " "(default: schemas/default_schema.yaml)"),
     )
     parser.add_argument(
+        "-c",
+        "--config",
+        type=str,
+        default="src/generators/config/generator_config.yaml",
+        help=(
+            "Path to generator config file "
+            "(default: src/generators/config/generator_config.yaml)"
+        ),
+    )
+    parser.add_argument(
         "-f",
         "--format",
         type=str,
@@ -54,7 +64,9 @@ def main():
 
         # Step 2: Initialize factory and verify connection
         print("Initializing persona factory...")
-        factory = PersonaFactory(schema_path=args.schema, output_format=args.format)
+        factory = PersonaFactory(
+            schema_path=args.schema, output_format=args.format, config_path=args.config
+        )
         if not factory.verify_connection():
             raise ConnectionError("Failed to connect to OpenAI API")
         print("✅ OpenAI connection verified!")

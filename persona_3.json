@@ -1,0 +1,10 @@
+{
+    "id": "persona01",
+    "first_name": "John",
+    "last_name": "Doe",
+    "age": "34",
+    "gender": "Male",
+    "job_title": "Software Engineer",
+    "bio": "Born and raised in a Catholic family in rural Texas, John moved to Silicon Valley to pursue his dream of working in the tech industry. An avid reader and a fitness enthusiast, he spends his free time either buried in a book or at the gym. His life goal is to start his own tech company and make a positive impact on society. He strongly believes in the values of hard work and perseverance.",
+    "visual_description": "John is 6 feet tall with an athletic body type. He sports a clean-shaven look and prefers casual attire, often seen in a pair of jeans and a t-shirt."
+}

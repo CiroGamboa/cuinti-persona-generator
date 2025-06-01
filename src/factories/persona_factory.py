@@ -9,7 +9,11 @@ class PersonaFactory:
     """Factory class for generating and exporting multiple personas."""
 
     def __init__(
-        self, schema_path: str, output_format: str = "json", output_dir: str = "."
+        self,
+        schema_path: str,
+        output_format: str = "json",
+        output_dir: str = ".",
+        config_path: str = "src/generators/config/generator_config.yaml",
     ):
         """
         Initialize the persona factory.
@@ -18,11 +22,14 @@ class PersonaFactory:
             schema_path: Path to the schema file
             output_format: Output format (json or yaml)
             output_dir: Directory where exported files will be saved
+            config_path: Path to the generator configuration file
         """
         self.schema_path = schema_path
         self.output_format = output_format
         self.output_dir = Path(output_dir)
-        self.generator = OpenAIGenerator(schema_path=schema_path)
+        self.generator = OpenAIGenerator(
+            schema_path=schema_path, config_path=config_path
+        )
         self.exporter = PersonaExporter(output_dir=output_dir)
 
     def verify_connection(self) -> bool:
@@ -47,9 +54,18 @@ class PersonaFactory:
         personas = []
         for i in range(num_personas):
             print(f"\nGenerating persona {i + 1}/{num_personas}...")
-            persona = self.generator.generate()
-            personas.append(persona)
-            print(f"✅ Persona {i + 1} generated successfully!")
+            try:
+                persona = self.generator.generate()
+                personas.append(persona)
+                print(f"✅ Persona {i + 1} generated successfully!")
+            except Exception as e:
+                msg = (
+                    "⚠️  Warning: Persona "
+                    + str(i + 1)
+                    + " failed validation: "
+                    + str(e)
+                )
+                print(msg)
         return personas
 
     def export_personas(

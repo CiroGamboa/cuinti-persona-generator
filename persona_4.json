@@ -1,0 +1,10 @@
+{
+    "id": "123456789",
+    "first_name": "John",
+    "last_name": "Doe",
+    "age": "35",
+    "gender": "Male",
+    "job_title": "Software Engineer",
+    "bio": "Born and raised in Boston, John is a dedicated family man with two children. He pursued a Bachelor's degree in Computer Science and started his career in the tech industry. John values hard work, continuous learning, and integrity. He spends his free time hiking and reading technical journals. He identifies as a Christian and comes from a middle-class background.",
+    "visual_description": "John is 6 feet tall with an athletic body type. He prefers casual clothing and is often seen wearing jeans and a t-shirt."
+}
