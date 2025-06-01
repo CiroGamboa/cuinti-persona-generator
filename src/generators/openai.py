@@ -17,7 +17,7 @@ class OpenAIGenerator(BaseGenerator):
         schema_path: Optional[str] = None,
         config_path: Optional[str] = None,
         model: str = "gpt-4",
-        temperature: float = 0.7,
+        temperature: float = 0.9,
     ):
         """
         Initialize the OpenAI generator.
