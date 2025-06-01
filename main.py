@@ -49,6 +49,13 @@ def parse_arguments():
         default="json",
         help="Output format (default: json)",
     )
+    parser.add_argument(
+        "-o",
+        "--output-dir",
+        type=str,
+        default="export",
+        help="Directory where exported files will be saved (default: export)",
+    )
     return parser.parse_args()
 
 
@@ -65,7 +72,10 @@ def main():
         # Step 2: Initialize factory and verify connection
         print("Initializing persona factory...")
         factory = PersonaFactory(
-            schema_path=args.schema, output_format=args.format, config_path=args.config
+            schema_path=args.schema,
+            output_format=args.format,
+            config_path=args.config,
+            output_dir=args.output_dir,
         )
         if not factory.verify_connection():
             raise ConnectionError("Failed to connect to OpenAI API")

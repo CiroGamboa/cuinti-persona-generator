@@ -72,18 +72,16 @@ def test_export_personas_json(factory):
         {"id": "2", "name": "Test Person 2", "age": 25},
     ]
 
-    exported_paths = factory.export_personas(personas, filename_prefix="test_persona")
+    output_path = factory.export_personas(personas, filename_prefix="test_persona")
 
-    assert len(exported_paths) == 2
-    for path in exported_paths:
-        assert path.exists()
-        assert path.suffix == ".json"
-        with open(path) as f:
-            data = json.load(f)
-            assert isinstance(data, dict)
-            assert "id" in data
-            assert "name" in data
-            assert "age" in data
+    assert output_path.exists()
+    assert output_path.suffix == ".json"
+    with open(output_path) as f:
+        data = json.load(f)
+        assert "personas" in data
+        assert len(data["personas"]) == 2
+        assert data["personas"][0]["id"] == "1"
+        assert data["personas"][1]["id"] == "2"
 
 
 def test_export_personas_yaml(temp_dir):
@@ -99,33 +97,27 @@ def test_export_personas_yaml(temp_dir):
         {"id": "2", "name": "Test Person 2", "age": 25},
     ]
 
-    exported_paths = factory.export_personas(personas, filename_prefix="test_persona")
+    output_path = factory.export_personas(personas, filename_prefix="test_persona")
 
-    assert len(exported_paths) == 2
-    for path in exported_paths:
-        assert path.exists()
-        assert path.suffix == ".yaml"
-        with open(path) as f:
-            data = yaml.safe_load(f)
-            assert isinstance(data, dict)
-            assert "id" in data
-            assert "name" in data
-            assert "age" in data
+    assert output_path.exists()
+    assert output_path.suffix == ".yaml"
+    with open(output_path) as f:
+        data = yaml.safe_load(f)
+        assert "personas" in data
+        assert len(data["personas"]) == 2
+        assert data["personas"][0]["id"] == "1"
+        assert data["personas"][1]["id"] == "2"
 
 
 def test_generate_and_export(factory):
     """Test combined generation and export functionality."""
     num_personas = 2
-    exported_paths = factory.generate_and_export(
+    output_path = factory.generate_and_export(
         num_personas, filename_prefix="test_persona"
     )
 
-    assert len(exported_paths) == num_personas
-    for path in exported_paths:
-        assert path.exists()
-        with open(path) as f:
-            data = json.load(f)
-            assert isinstance(data, dict)
-            assert "id" in data
-            assert "name" in data
-            assert "age" in data
+    assert output_path.exists()
+    with open(output_path) as f:
+        data = json.load(f)
+        assert "personas" in data
+        assert len(data["personas"]) == num_personas

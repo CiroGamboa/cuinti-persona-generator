@@ -1,0 +1,24 @@
+{
+    "personas": [
+        {
+            "id": "12345",
+            "first_name": "John",
+            "last_name": "Doe",
+            "age": "35",
+            "gender": "Male",
+            "job_title": "Software Engineer",
+            "bio": "John was born and raised in a Christian family in Boston. He values hard work and honesty and is committed to his career in the tech industry. He enjoys spending time with his wife and two children. In his free time, John loves to play guitar and explore new places. His dream is to establish a tech startup.",
+            "visual_description": "John is tall with a lean body. He prefers casual clothing and often seen wearing a pair of jeans and a t-shirt. His glasses give him a distinguished look."
+        },
+        {
+            "id": "12345",
+            "first_name": "John",
+            "last_name": "Doe",
+            "age": "35",
+            "gender": "Male",
+            "job_title": "Software Developer",
+            "bio": "Born and raised in a Christian family in Texas, John is passionate about coding and solving complex problems. He completed his degree in Computer Science and has been working in the tech industry for over a decade. He cherishes his family, including his wife and two kids. In his spare time, John enjoys hiking and reading sci-fi novels. His long-term goal is to start his own tech company.",
+            "visual_description": "John is a tall, fit individual with a casual dressing style. He stands at 6'2\" and often spotted wearing jeans and a t-shirt."
+        }
+    ]
+}

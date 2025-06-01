@@ -22,8 +22,29 @@ def sample_persona():
 
 
 @pytest.fixture
+def sample_personas():
+    """Sample multiple personas data for testing."""
+    return [
+        {
+            "name": "John Doe",
+            "age": 30,
+            "occupation": "Software Engineer",
+            "interests": ["coding", "reading", "hiking"],
+            "location": {"city": "San Francisco", "country": "USA"},
+        },
+        {
+            "name": "Jane Smith",
+            "age": 28,
+            "occupation": "Data Scientist",
+            "interests": ["machine learning", "yoga", "cooking"],
+            "location": {"city": "New York", "country": "USA"},
+        },
+    ]
+
+
+@pytest.fixture
 def temp_dir():
-    """Create a temporary directory for test files."""
+    """Create a temporary directory for test outputs."""
     with tempfile.TemporaryDirectory() as tmp_dir:
         yield tmp_dir
 
@@ -44,41 +65,64 @@ def expected_yaml_output():
         return f.read()
 
 
-def test_export_json(sample_persona, temp_dir, expected_json_output):
-    """Test exporting persona to JSON format."""
+def test_export_json(sample_persona, temp_dir):
+    """Test exporting single persona to JSON format."""
     exporter = PersonaExporter(output_dir=temp_dir)
     output_path = exporter.export(sample_persona, "json")
 
     assert output_path.exists()
     assert output_path.suffix == ".json"
 
-    # Compare the actual output with the expected output
     with open(output_path) as f:
-        actual_output = f.read()
-        assert actual_output == expected_json_output
+        data = json.load(f)
+        assert "personas" in data
+        assert len(data["personas"]) == 1
+        assert data["personas"][0] == sample_persona
 
-    # Also verify the data structure matches
+
+def test_export_multiple_json(sample_personas, temp_dir):
+    """Test exporting multiple personas to JSON format."""
+    exporter = PersonaExporter(output_dir=temp_dir)
+    output_path = exporter.export_multiple(sample_personas, "json")
+
+    assert output_path.exists()
+    assert output_path.suffix == ".json"
+
     with open(output_path) as f:
-        exported_data = json.load(f)
-        assert exported_data == sample_persona
+        data = json.load(f)
+        assert "personas" in data
+        assert len(data["personas"]) == 2
+        assert data["personas"] == sample_personas
 
 
-def test_export_yaml(sample_persona, temp_dir, expected_yaml_output):
-    """Test exporting persona to YAML format."""
+def test_export_yaml(sample_persona, temp_dir):
+    """Test exporting single persona to YAML format."""
     exporter = PersonaExporter(output_dir=temp_dir)
     output_path = exporter.export(sample_persona, "yaml")
 
     assert output_path.exists()
     assert output_path.suffix == ".yaml"
 
-    # Compare the actual output data structure with the expected output data structure
     with open(output_path) as f:
-        exported_data = yaml.safe_load(f)
-    fixture_path = Path(__file__).parent / "fixtures" / "outputs" / "persona.yaml"
-    with open(fixture_path) as f:
-        expected_data = yaml.safe_load(f)
-    assert exported_data == expected_data
-    assert exported_data == sample_persona
+        data = yaml.safe_load(f)
+        assert "personas" in data
+        assert len(data["personas"]) == 1
+        assert data["personas"][0] == sample_persona
+
+
+def test_export_multiple_yaml(sample_personas, temp_dir):
+    """Test exporting multiple personas to YAML format."""
+    exporter = PersonaExporter(output_dir=temp_dir)
+    output_path = exporter.export_multiple(sample_personas, "yaml")
+
+    assert output_path.exists()
+    assert output_path.suffix == ".yaml"
+
+    with open(output_path) as f:
+        data = yaml.safe_load(f)
+        assert "personas" in data
+        assert len(data["personas"]) == 2
+        assert data["personas"] == sample_personas
 
 
 def test_invalid_output_format(sample_persona, temp_dir):
@@ -90,7 +134,7 @@ def test_invalid_output_format(sample_persona, temp_dir):
         exporter.export(sample_persona, "invalid_format")
 
 
-def test_default_output_format(sample_persona, temp_dir, expected_json_output):
+def test_default_output_format(sample_persona, temp_dir):
     """Test that default output format is JSON."""
     exporter = PersonaExporter(output_dir=temp_dir)
     output_path = exporter.export(sample_persona)
@@ -98,13 +142,14 @@ def test_default_output_format(sample_persona, temp_dir, expected_json_output):
     assert output_path.exists()
     assert output_path.suffix == ".json"
 
-    # Verify the output matches the expected format
     with open(output_path) as f:
-        actual_output = f.read()
-        assert actual_output == expected_json_output
+        data = json.load(f)
+        assert "personas" in data
+        assert len(data["personas"]) == 1
+        assert data["personas"][0] == sample_persona
 
 
-def test_custom_output_directory(sample_persona, expected_json_output):
+def test_custom_output_directory(sample_persona):
     """Test exporting to a custom output directory."""
     with tempfile.TemporaryDirectory() as custom_dir:
         exporter = PersonaExporter(output_dir=custom_dir)
@@ -113,10 +158,11 @@ def test_custom_output_directory(sample_persona, expected_json_output):
         assert output_path.parent == Path(custom_dir)
         assert output_path.exists()
 
-        # Verify the output matches the expected format
         with open(output_path) as f:
-            actual_output = f.read()
-            assert actual_output == expected_json_output
+            data = json.load(f)
+            assert "personas" in data
+            assert len(data["personas"]) == 1
+            assert data["personas"][0] == sample_persona
 
 
 def test_file_permission_error(sample_persona, temp_dir):
@@ -124,7 +170,7 @@ def test_file_permission_error(sample_persona, temp_dir):
     exporter = PersonaExporter(output_dir=temp_dir)
 
     # Create a file that we can't write to
-    output_path = Path(temp_dir) / "persona.json"
+    output_path = Path(temp_dir) / "personas.json"
     output_path.touch()
     os.chmod(output_path, 0o444)  # Read-only
 
@@ -145,20 +191,19 @@ def test_nested_data_export(
     # Test JSON export
     json_path = exporter.export(sample_persona, "json")
     with open(json_path) as f:
-        actual_json = f.read()
-        assert actual_json == expected_json_output
-    with open(json_path) as f:
-        json_data = json.load(f)
-        assert json_data["location"]["city"] == "San Francisco"
-        assert json_data["interests"] == ["coding", "reading", "hiking"]
+        data = json.load(f)
+        assert "personas" in data
+        assert len(data["personas"]) == 1
+        exported_persona = data["personas"][0]
+        assert exported_persona["location"]["city"] == "San Francisco"
+        assert exported_persona["interests"] == ["coding", "reading", "hiking"]
 
     # Test YAML export
     yaml_path = exporter.export(sample_persona, "yaml")
     with open(yaml_path) as f:
-        exported_data = yaml.safe_load(f)
-    fixture_path = Path(__file__).parent / "fixtures" / "outputs" / "persona.yaml"
-    with open(fixture_path) as f:
-        expected_data = yaml.safe_load(f)
-    assert exported_data == expected_data
-    assert exported_data["location"]["city"] == "San Francisco"
-    assert exported_data["interests"] == ["coding", "reading", "hiking"]
+        data = yaml.safe_load(f)
+        assert "personas" in data
+        assert len(data["personas"]) == 1
+        exported_persona = data["personas"][0]
+        assert exported_persona["location"]["city"] == "San Francisco"
+        assert exported_persona["interests"] == ["coding", "reading", "hiking"]
