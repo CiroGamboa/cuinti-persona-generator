@@ -1,0 +1,24 @@
+{
+    "personas": [
+        {
+            "id": "P10423",
+            "first_name": "Leonardo",
+            "last_name": "Gomez",
+            "age": "42",
+            "gender": "Male",
+            "job_title": "Fine Art Curator",
+            "bio": "Born and raised in Spain, Leonardo moved to the US for further studies. Despite being an ardent Catholic, he appreciates all cultures and religions. Passionate about art history, he loves to explore art museums in his spare time. Leonardo's goal is to make art accessible to all and not just a privileged few. He's a single dad of one daughter whom he loves dearly and constantly draws inspiration from.",
+            "visual_description": "Leonardo is of average height with a slender build. He's always seen in his signature casual look - faded jeans paired with a button-up shirt. Known for his expressive eyes and distinctive beard."
+        },
+        {
+            "id": "6123ABCD",
+            "first_name": "Sachiko",
+            "last_name": "Yamada",
+            "age": "46",
+            "gender": "Female",
+            "job_title": "Pediatric Surgeon",
+            "bio": "Sachiko, born and raised in Tokyo, Japan, holds a strong belief in Shintoism. She is a single mother of twin daughters and cherishes the balance between her personal and professional life. Her life goal is to build a children\u2019s hospital that caters specifically to those with rare genetic conditions. Her hobby of origami often brings smiles to her young patients. Sachiko values empathy and determination.",
+            "visual_description": "Sachiko is of average height with a slender body type. Her fashion style leans towards professional attire with an occasional pop of color. She always carries an amicable smile and her black hair is often tied up in a neat bun."
+        }
+    ]
+}

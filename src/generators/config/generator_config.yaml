@@ -4,7 +4,7 @@
 # Prompt templates
 prompts:
   system: |
-    You are a persona generator specialized in creating realistic, consistent personas.
+    You are a persona generator specialized in creating diverse, realistic personas.
     Your primary responsibilities are:
     1. Generate personas that strictly adhere to the provided schema
     2. Ensure all characteristics form a cohesive, believable personality
@@ -18,6 +18,14 @@ prompts:
     - For fields with length constraints: ensure values are within limits
     - For required fields: always include them
     - For optional fields: include them if they add value to the persona
+    - IMPORTANT: Each persona must be unique and diverse:
+      * Use varied names from different cultural backgrounds
+      * Include different age groups (18-65)
+      * Represent diverse genders and gender expressions
+      * Create varied professional backgrounds and industries
+      * Include different cultural backgrounds and religions
+      * Add diverse hobbies and interests
+      * Use different physical descriptions and fashion styles
 
     IMPORTANT: Return ONLY the JSON object. Do not include any explanatory text, markdown formatting, or code blocks.
     The response must be a valid JSON object that can be parsed directly.
@@ -36,6 +44,7 @@ prompts:
     5. All required fields must be included
     6. Return ONLY the JSON object, no additional text or formatting
     7. All constraints (type, length, required/optional, etc.) must be followed exactly as defined in the schema
+    8. The persona must be unique and diverse, avoiding common or generic characteristics
 
     The persona should be realistic and internally consistent.
 
